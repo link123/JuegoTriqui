@@ -6,34 +6,89 @@ const player1Won = document.getElementById("player1");
 const player2Won = document.getElementById("player2");
 
 
-document.querySelectorAll("button").forEach((obj, i) =>
-    obj.addEventListener("click", (e) => checkBox(e, i)));
+// Classes
+
+class Box {
+    constructor(index, value) {
+        this.index = index;
+        this.value = value;
+    }
+
+    markItSelf(mark) {
+        this.value = 'mark';
+    }
+}
+
+class Board {
+    constructor(boxList) {
+        this.boxList = boxList;
+    }
+
+    startBoxes() {
+        return 0;
+    }
+}
+
+const arreglo2 = document.querySelectorAll("button");
+// const arreglo = document.querySelectorAll("button").forEach((obj) =>
+//     obj.addEventListener("click", (e) => checkBox(e)));
+
+// console.log(arreglo2[2]);
+
+initializeBord();
+
+function initializeBord() {
+
+    for (let i = 0; i < arreglo2.length; i++) {
+        arreglo2[i].addEventListener("click", initializeBox(arreglo2[i]));
+        // console.log(arreglo2[i]);
+    }
+}
+
+function initializeBox(e) {
+    const box = e;
+    console.log(e);
+    // e.disabled = true;
+
+    // box.innerHTML = 'O';
+    // box.style.fontSize = `${55}px`;
+    // box.style.color = 'red';
+
+    // box.style.width = `${100}px`;
 
 
-function checkBox(e, index) {
-    const box = e.target;
-    box.disabled = true;
-    turn++;
-    drawMark(turn, box, index);
 }
 
 
 
-function drawMark(turn, box, index) {
+
+
+function checkBox(e) {
+    const box = e;
+    box.disabled = true;
+    turn++;
+    drawMark(turn, box);
+}
+
+
+
+function drawMark(turn, box) {
 
     if (turn % 2 === 0) {
         box.innerHTML = 'O';
         box.style.fontSize = `${55}px`;
-        markBoard(index, box, 'O');
+        markBoard(box, 'O');
     } else {
         box.innerHTML = 'X';
         box.style.fontSize = `${55}px`;
-        markBoard(index, box, 'X');
+        markBoard(box, 'X');
     }
 
 }
 
-function markBoard(index, box, XO) {
+function markBoard(box, XO) {
+
+    let index = parseInt(box.id)
     board[index] = XO;
     validateWinnerExist();
 }

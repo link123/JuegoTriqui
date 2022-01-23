@@ -21,6 +21,7 @@ body {
     margin: 200px auto;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    border: 2px solid;
 }
 
 button {
@@ -28,6 +29,7 @@ button {
     height: 100px;
     border-radius: 20px;
     background-color: white;
+    z-index: 1000;
 }
 
 h2 {
