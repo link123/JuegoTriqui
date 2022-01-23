@@ -1,12 +1,33 @@
-// Manejo de las casillas
-let turn = 0;
-const board = [];
-const boxList = document.getElementsByTagName('button');
-const player1Won = document.getElementById("player1");
-const player2Won = document.getElementById("player2");
-
-
 // Classes
+
+class Game {
+    constructor(turn) {
+        this.turn = turn;
+        this.board;
+        this.initializateBoard();
+    }
+    initializateBoard() {
+        this.board = new Board();
+    }
+
+
+    incrementTurn() {
+        this.turn++;
+    }
+
+    showWinnerMessage(mark) {
+        const player1Won = document.getElementById("player1");
+        const player2Won = document.getElementById("player2");
+        if (mark === 'X')
+            player1Won.style.color = 'red';
+        else
+            player2Won.style.color = 'red';
+    }
+
+
+}
+
+
 
 class Box {
     constructor(index, value) {
@@ -14,180 +35,182 @@ class Box {
         this.value = value;
     }
 
-    markItSelf(mark) {
-        this.value = 'mark';
+    drawItSelf(button, turn) {
+
+        let rightMark = this.knowmyRightMark(turn);
+        button.disabled = true;
+        button.style.fontSize = `${55}px`;
+        button.innerHTML = rightMark;
+        game.board.boxList[button.id].value = rightMark;
+        this.tellMyEventToBoard();
+
     }
+
+    knowmyRightMark(turn) {
+
+        if (turn % 2 === 0)
+            return 'O';
+        return 'X';
+
+    }
+
+    tellMyEventToBoard() {
+
+        game.board.validateWinnerExist();
+
+    }
+
+    touchBox(b) {
+
+        console.log('es prueba');
+    }
+
 }
 
 class Board {
-    constructor(boxList) {
-        this.boxList = boxList;
+    constructor() {
+        this.boxList = [];
+        this.boxListGrafic = [];
+
+        this.initializeBoxes();
     }
 
-    startBoxes() {
-        return 0;
-    }
-}
+    initializeBoxes() {
+        for (let i = 0; i < 9; i++) {
+            let box = new Box(i, false);
+            this.boxList[i] = box;
+        }
 
-const arreglo2 = document.querySelectorAll("button");
-// const arreglo = document.querySelectorAll("button").forEach((obj) =>
-//     obj.addEventListener("click", (e) => checkBox(e)));
-
-// console.log(arreglo2[2]);
-
-initializeBord();
-
-function initializeBord() {
-
-    for (let i = 0; i < arreglo2.length; i++) {
-        arreglo2[i].addEventListener("click", initializeBox(arreglo2[i]));
-        // console.log(arreglo2[i]);
-    }
-}
-
-function initializeBox(e) {
-    const box = e;
-    console.log(e);
-    // e.disabled = true;
-
-    // box.innerHTML = 'O';
-    // box.style.fontSize = `${55}px`;
-    // box.style.color = 'red';
-
-    // box.style.width = `${100}px`;
+        this.boxListGrafic = document.getElementsByTagName('button');
 
 
-}
-
-
-
-
-
-function checkBox(e) {
-    const box = e;
-    box.disabled = true;
-    turn++;
-    drawMark(turn, box);
-}
-
-
-
-function drawMark(turn, box) {
-
-    if (turn % 2 === 0) {
-        box.innerHTML = 'O';
-        box.style.fontSize = `${55}px`;
-        markBoard(box, 'O');
-    } else {
-        box.innerHTML = 'X';
-        box.style.fontSize = `${55}px`;
-        markBoard(box, 'X');
     }
 
-}
+    telloToGameExisLine(mark) {
 
-function markBoard(box, XO) {
-
-    let index = parseInt(box.id)
-    board[index] = XO;
-    validateWinnerExist();
-}
-
-function validateWinnerExist() {
-
-    validateRow1();
-    validateRow2();
-    validateRow3();
-
-    validateColumn1();
-    validateColumn2();
-    validateColumn3();
-
-    validateDiagonal1()
-    validateDiagonal2();
-
-}
-
-function validateRow1() {
-    if (board[0] == board[1] && board[1] == board[2] && board[0]) {
-        drawLine(0, 1, 2);
-        showMessageWinner(board[0]);
-    }
-}
-
-function validateRow2() {
-    if (board[3] == board[4] && board[4] == board[5] && board[3]) {
-        drawLine(3, 4, 5);
-        showMessageWinner(board[3]);
-    }
-}
-
-function validateRow3() {
-    if (board[6] == board[7] && board[7] == board[8] && board[6]) {
-        drawLine(6, 7, 8);
-        showMessageWinner(board[6]);
-    }
-}
-
-function validateColumn1() {
-
-    if (board[0] == board[3] && board[3] == board[6] && board[0]) {
-        drawLine(0, 3, 6);
-        showMessageWinner(board[0]);
-    }
-}
-
-function validateColumn2() {
-
-    if (board[1] == board[4] && board[4] == board[7] && board[1]) {
-        drawLine(1, 4, 7);
-        showMessageWinner(board[1]);
-    }
-}
-
-function validateColumn3() {
-
-    if (board[2] == board[5] && board[5] == board[8] && board[2]) {
-        drawLine(2, 5, 8);
-        showMessageWinner(board[2]);
-    }
-}
-
-function validateDiagonal1() {
-
-    if (board[0] == board[4] && board[4] == board[8] && board[0]) {
-        drawLine(0, 4, 8);
-        showMessageWinner(board[0]);
-    }
-}
-
-function validateDiagonal2() {
-
-    if (board[6] == board[4] && board[4] == board[2] && board[6]) {
-        drawLine(6, 4, 2);
-        showMessageWinner(board[6]);
+        game.showWinnerMessage(mark);
 
     }
-}
 
+    validateWinnerExist() {
 
-function drawLine(arg1, arg2, arg3) {
-    boxList[arg1].style.color = 'red';
-    boxList[arg2].style.color = 'red';
-    boxList[arg3].style.color = 'red';
-    disableAllBoard();
-}
+        this.validateRow1();
+        this.validateRow2();
+        this.validateRow3();
 
-function disableAllBoard() {
-    for (let i = 0; i < boxList.length; i++) {
-        boxList[i].disabled = true;
+        this.validateColumn1();
+        this.validateColumn2();
+        this.validateColumn3();
+
+        this.validateDiagonal1();
+        this.validateDiagonal2();
+
     }
 
+    validateRow1() {
+
+
+        if (game.board.boxList[0].value == game.board.boxList[1].value &&
+            game.board.boxList[1].value == game.board.boxList[2].value &&
+            game.board.boxList[0].value) {
+            this.drawLine(0, 1, 2);
+            this.telloToGameExisLine(game.board.boxList[0].value);
+        }
+    }
+
+    validateRow2() {
+        if (game.board.boxList[3].value == game.board.boxList[4].value &&
+            game.board.boxList[4].value == game.board.boxList[5].value &&
+            game.board.boxList[3].value) {
+            this.drawLine(3, 4, 5);
+            this.telloToGameExisLine(game.board.boxList[3].value);
+        }
+    }
+
+    validateRow3() {
+        if (game.board.boxList[6].value == game.board.boxList[7].value &&
+            game.board.boxList[7].value == game.board.boxList[8].value &&
+            game.board.boxList[6].value) {
+            this.drawLine(6, 7, 8);
+            this.telloToGameExisLine(game.board.boxList[6].value);
+        }
+    }
+
+    validateColumn1() {
+
+        if (game.board.boxList[0].value == game.board.boxList[3].value &&
+            game.board.boxList[3].value == game.board.boxList[6].value &&
+            game.board.boxList[0].value) {
+
+            this.drawLine(0, 3, 6);
+            this.telloToGameExisLine(game.board.boxList[0].value);
+        }
+    }
+
+    validateColumn2() {
+
+        if (game.board.boxList[1].value == game.board.boxList[4].value &&
+            game.board.boxList[4].value == game.board.boxList[7].value &&
+            game.board.boxList[1].value) {
+            this.drawLine(1, 4, 7);
+            this.telloToGameExisLine(game.board.boxList[1].value);
+        }
+    }
+
+    validateColumn3() {
+        if (game.board.boxList[2].value == game.board.boxList[5].value &&
+            game.board.boxList[5].value == game.board.boxList[8].value &&
+            game.board.boxList[2].value) {
+            this.drawLine(2, 5, 8);
+            this.telloToGameExisLine(game.board.boxList[2].value);
+        }
+    }
+
+    validateDiagonal1() {
+        if (game.board.boxList[0].value == game.board.boxList[4].value &&
+            game.board.boxList[4].value == game.board.boxList[8].value &&
+            game.board.boxList[0].value) {
+            this.drawLine(0, 4, 8);
+            this.telloToGameExisLine(game.board.boxList[0].value);
+        }
+    }
+
+    validateDiagonal2() {
+        if (game.board.boxList[6].value == game.board.boxList[4].value &&
+            game.board.boxList[2].value == game.board.boxList[6].value &&
+            game.board.boxList[6].value) {
+            this.drawLine(6, 4, 2);
+            this.telloToGameExisLine(game.board.boxList[6].value);
+
+        }
+    }
+
+    drawLine(arg1, arg2, arg3) {
+        game.board.boxListGrafic[arg1].style.color = 'red';
+        game.board.boxListGrafic[arg2].style.color = 'red';
+        game.board.boxListGrafic[arg3].style.color = 'red';
+        this.disableAllBoard();
+    }
+
+    disableAllBoard() {
+        for (let i = 0; i < this.boxListGrafic.length; i++) {
+            this.boxListGrafic[i].disabled = true;
+        }
+
+    }
+
+
+
 }
 
-function showMessageWinner(mark) {
-    if (mark === 'X')
-        player1Won.style.color = 'red';
-    else
-        player2Won.style.color = 'red';
+
+
+function touchBox(button) {
+    game.incrementTurn();
+    game.board.boxList[button.id].drawItSelf(button, game.turn);
 }
+
+
+// Main
+
+let game = new Game(0);
